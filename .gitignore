@@ -1,0 +1,8 @@
+/domain.crt
+/domain.csr
+/domain.key
+/.htpasswd
+/.vagrant/
+/domain.pem
+setup.conf
+setup.rc

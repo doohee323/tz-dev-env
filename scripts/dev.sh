@@ -15,15 +15,20 @@ echo "alias l='ls -lah --color=auto'" >> .bashrc
 echo "export SRC_DIR='/vagrant/resources'" >> .bashrc
 echo "export PATH=$PATH:/usr/local/go/bin" >> .bashrc
 
-sudo apt-get update
-sudo apt-get upgrade
+#sudo apt-get update
+#sudo apt-get upgrade
 sudo apt-get install systemd-services -y
 
 ### [install nginx] ############################################################################################################
 sudo apt-get install nginx -y
 
 sudo cp $SRC_DIR/nginx/nginx.conf /etc/nginx/nginx.conf
-sudo cp -Rf $SRC_DIR/nginx/default /etc/nginx/sites-enabled
+# https://wiki.jenkins-ci.org/display/JENKINS/Running+Jenkins+behind+Nginx
+sudo cp -Rf $SRC_DIR/nginx/jenkins /etc/nginx/sites-enabled
+
+#https://confluence.atlassian.com/jirakb/integrating-jira-with-nginx-426115340.html
+sudo cp -Rf $SRC_DIR/nginx/jira /etc/nginx/sites-enabled
+
 # curl http://127.0.0.1:80
 sudo service nginx stop
 sudo nginx -s stop
@@ -48,6 +53,9 @@ sudo tail /var/lib/jenkins/secrets/initialAdminPassword
 sudo service jenkins status
 #sudo service jenkins restart
 #tail -f /var/log/jenkins/jenkins.log
+
+sudo mkdir -p /var/log/nginx/jenkins
+sudo mkdir -p /var/log/nginx/jira
 
 ### [install mysql] ############################################################################################################
 # mysql connector
@@ -85,18 +93,35 @@ sudo wget https://www.atlassian.com/software/jira/downloads/binary/atlassian-jir
 sudo chmod +x ./atlassian-jira-software-7.1.8-jira-7.1.8-x64.bin
 # sudo ./atlassian-jira-software-7.1.8-jira-7.1.8-x64.bin
 
-#sudo /etc/init.d/jira stop
-
-#sudo rm /opt/atlassian/jira/work/catalina.pid
-sudo /etc/init.d/jira start
-
-#tail -f /opt/atlassian/jira/catalina.out
-
 cd /opt/download
 sudo wget https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.39.tar.gz
 sudo tar xvfz ./mysql-connector-java-5.1.39.tar.gz
 sudo cp ./mysql-connector-java-5.1.39/mysql-connector-java-5.1.39-bin.jar /opt/atlassian/jira/lib/
 
+#sudo /etc/init.d/jira stop
+#sudo rm /opt/atlassian/jira/work/catalina.pid
+#sudo /etc/init.d/jira start
+
+#tail -f /opt/atlassian/jira/catalina.out
+#sudo chown -Rf jira1:root /opt/atlassian/jira
+
+#sudo ufw enable
+#sudo ufw allow "Nginx Full"
+#sudo iptables -I INPUT -p tcp --dport 80 -j ACCEPT
+#sudo iptables -I INPUT -p tcp --dport 8080 -j ACCEPT
+#sudo iptables -I INPUT -p tcp --dport 8000 -j ACCEPT
+#sudo service iptables save
+#sudo service iptables restart
+
 exit 0
+
+# install jira with other way
+cd /home/ubuntu
+wget http://www.atlassian.com/software/jira/downloads/binary/atlassian-jira-6.1.5-x64.bin
+mkdir jira
+mv atlassian-jira-6.1.5-x64.bin jira
+cd jira
+chmod +x atlassian-jira-6.1.5-x64.bin
+./atlassian-jira-6.1.5-x64.bin
 
 

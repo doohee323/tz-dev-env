@@ -117,11 +117,26 @@ exit 0
 
 # install jira with other way
 cd /home/ubuntu
-wget http://www.atlassian.com/software/jira/downloads/binary/atlassian-jira-6.1.5-x64.bin
 mkdir jira
-mv atlassian-jira-6.1.5-x64.bin jira
 cd jira
+wget http://www.atlassian.com/software/jira/downloads/binary/atlassian-jira-6.1.5-x64.bin
 chmod +x atlassian-jira-6.1.5-x64.bin
 ./atlassian-jira-6.1.5-x64.bin
 
+sudo add-apt-repository ppa:openjdk-r/ppa  
+sudo apt-get update   
+sudo apt-get install openjdk-7-jdk -y
+#sudo apt-get install openjdk-8-jdk
+  
+sudo apt-get install maven -y
+
+cd /home/ubuntu/atlassian/jira/bin
+./start-jira.sh
+#stop-jira.sh
+
+# remove
+#rm -rf /home/ubuntu/atlassian
+
+
+/home/ubuntu/atlassian/jira/jre//bin/java -Djava.util.logging.config.file=/home/ubuntu/atlassian/jira/conf/logging.properties -XX:MaxPermSize=384m -Xms384m -Xmx768m -Djava.awt.headless=true -Datlassian.standalone=JIRA -Dorg.apache.jasper.runtime.BodyContentImpl.LIMIT_BUFFER=true -Dmail.mime.decodeparameters=true -Dorg.dom4j.factory=com.atlassian.core.xml.InterningDocumentFactory -XX:+PrintGCDateStamps -XX:-OmitStackTraceInFastThrow -Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager -Djava.endorsed.dirs=/home/ubuntu/atlassian/jira/endorsed -classpath /home/ubuntu/atlassian/jira/bin/bootstrap.jar:/home/ubuntu/atlassian/jira/bin/tomcat-juli.jar -Dcatalina.base=/home/ubuntu/atlassian/jira -Dcatalina.home=/home/ubuntu/atlassian/jira -Djava.io.tmpdir=/home/ubuntu/atlassian/jira/temp org.apache.catalina.startup.Bootstrap start
 
